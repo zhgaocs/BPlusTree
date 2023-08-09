@@ -1,13 +1,13 @@
+#ifndef UTILS_H
+#define UITLS_H
+
+#include "def.h"
+
 /**
  * T must overload operator== and operator<=
  * note that some len is passed by reference
  * arr is ascending ordered
  */
-
-#pragma once
-#include <cstddef>
-
-typedef std::size_t size_type;
 
 template <class T>
 inline static size_type locate_value(const T *arr, size_type len, const T &value)
@@ -71,3 +71,5 @@ inline static bool remove_value(T *arr, size_type &len, const T &value)
     else
         return false;
 }
+
+#endif
