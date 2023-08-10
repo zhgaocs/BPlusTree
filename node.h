@@ -64,43 +64,7 @@ inline static std::ostream &operator<<(std::ostream &os, const Node<KeyType, Max
 template <class KeyType, size_type MaxKeys>
 inline static std::ostream &operator<<(std::ostream &os, const IndexNode<KeyType, MaxKeys> &inode)
 {
-    typedef typename Node<KeyType, MaxKeys>::size_type size_type;
-
-    /*     if (inode.father)
-        {
-            os << "[<";
-
-            for (size_type i = 0; i < inode.father->key_count; ++i)
-                i ? os << ' ' << inode.father->keys[i] : os << inode.father->keys[i];
-
-            os << '>';
-
-            for (size_type i = 0; i < inode.key_count; ++i)
-                i ? os << ' ' << inode.keys[i] : os << inode.keys[i];
-
-            return os << ']';
-        }
-        else
-            return os << static_cast<Node<KeyType, MaxKeys>>(inode); */
-
-    os << '[';
-    if (inode.father)
-    {
-        os << '<';
-
-        for (size_type i = 0; i < inode.father->key_count; ++i)
-            i ? os << ' ' << inode.father->keys[i] : os << inode.father->keys[i];
-
-        os << '>';
-    }
-
-    for (size_type i = 0; i < inode.key_count; ++i)
-        i ? os << ' ' << inode.keys[i] : os << inode.keys[i];
-
-    os << '<';
-    for (size_type i = 0; i < inode.child_count; ++i)
-        i ? os << ' ' << inode.children[i]->keys[0] : os << inode.children[i]->keys[0];
-    return os << ">]";
+    return os << static_cast<Node<KeyType, MaxKeys>>(inode);
 }
 
 template <class KeyType, size_type MaxKeys>

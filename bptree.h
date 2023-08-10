@@ -149,7 +149,7 @@ inline bool BPlusTree<KeyType, Degree>::remove(const key_type &k)
             const size_type NODE_MIN_LEN = Degree & 1 ? Degree >> 1 : (Degree >> 1) - 1;
             remove_at(lnode->keys, lnode->key_count, k_idx);
 
-            if (lnode->key_count < NODE_MIN_LEN) // need borrow or merge
+            if (lnode->key_count < NODE_MIN_LEN) // lnode borrow or merge
             {
                 size_type bro_idx;
                 LNode *bro_lnode = nullptr;
@@ -171,7 +171,7 @@ inline bool BPlusTree<KeyType, Degree>::remove(const key_type &k)
                     }
                 }
 
-                if (bro_lnode->key_count != NODE_MIN_LEN) // borrow
+                if (bro_lnode->key_count != NODE_MIN_LEN) // lnode borrow
                 {
                     if (bro_idx < child_idx)
                     {
@@ -185,8 +185,9 @@ inline bool BPlusTree<KeyType, Degree>::remove(const key_type &k)
                         remove_at(bro_lnode->keys, bro_lnode->key_count, 0);
                     }
                 }
-                else // merge
+                else // lnode merge
                 {
+                    // Determine the value of bro_inode
                     if (bro_idx < child_idx)
                     {
                         std::memcpy(bro_lnode->keys + bro_lnode->key_count, lnode->keys,
@@ -213,11 +214,9 @@ inline bool BPlusTree<KeyType, Degree>::remove(const key_type &k)
                         remove_at(inode->children, inode->child_count, bro_idx);
                     }
 
-                    // update ancestor inode
-                    if (!child_idx && !k_idx)
+                    if (!child_idx && !k_idx) // update ancestor inode
                     {
                         INode *dad_inode = nullptr, *inode_cpy = inode;
-                        size_type child_index = 0;
 
                         while (dad_inode = inode->father)
                         {
@@ -225,14 +224,15 @@ inline bool BPlusTree<KeyType, Degree>::remove(const key_type &k)
                                 inode = dad_inode;
                             else
                             {
-                                child_index = locate_value(dad_inode->children, dad_inode->child_count,
-                                                           static_cast<Node<KeyType, Degree> *>(inode));
+                                child_idx = locate_value(dad_inode->children, dad_inode->child_count,
+                                                         static_cast<Node<KeyType, Degree> *>(inode));
                                 inode = dad_inode;
                                 break;
                             }
                         }
-                        if (child_index)
-                            inode->keys[child_index - 1] = lnode->keys[0];
+
+                        if (child_idx)
+                            inode->keys[child_idx - 1] = lnode->keys[0];
                         inode = inode_cpy;
                     }
 
@@ -259,35 +259,37 @@ inline bool BPlusTree<KeyType, Degree>::remove(const key_type &k)
                             }
                         }
 
-                        if (bro_inode->key_count != NODE_MIN_LEN) // borrow
-                        {
-                            if (bro_idx < child_idx)
+                        if (bro_inode->key_count != NODE_MIN_LEN) // inode borrow
+                            if (bro_idx < child_idx)              // borrow left
                             {
                                 insert_at(inode->keys, inode->key_count, dad_inode->keys[bro_idx], 0);
-                                --bro_inode->key_count;
 
+                                --bro_inode->key_count;
                                 dad_inode->keys[bro_idx] = bro_inode->keys[bro_inode->key_count];
 
                                 --bro_inode->child_count;
+                                if (ChildType::INDEX == bro_inode->child_type)
+                                    static_cast<INode *>(bro_inode->children[bro_inode->child_count])->father = inode;
                                 insert_at(inode->children, inode->child_count, bro_inode->children[bro_inode->child_count], 0);
                             }
-                            else
+                            else // borrow right
                             {
                                 inode->keys[inode->key_count] = dad_inode->keys[child_idx];
                                 ++inode->key_count;
 
                                 dad_inode->keys[child_idx] = bro_inode->keys[0];
 
+                                if (ChildType::INDEX == bro_inode->child_type)
+                                    static_cast<INode *>(bro_inode->children[0])->father = inode;
                                 inode->children[inode->child_count] = bro_inode->children[0];
                                 ++inode->child_count;
 
                                 remove_at(bro_inode->keys, bro_inode->key_count, 0);
                                 remove_at(bro_inode->children, bro_inode->child_count, 0);
                             }
-                        }
-                        else // merge
-                        {
-                            if (bro_idx < child_idx)
+
+                        else                         // inode merge
+                            if (bro_idx < child_idx) // merge left
                             {
                                 bro_inode->keys[bro_inode->key_count] = dad_inode->keys[bro_idx];
                                 ++bro_inode->key_count;
@@ -307,7 +309,7 @@ inline bool BPlusTree<KeyType, Degree>::remove(const key_type &k)
                                 delete inode;
                                 inode = bro_inode;
                             }
-                            else
+                            else // merge right
                             {
                                 inode->keys[inode->key_count] = dad_inode->keys[child_idx];
                                 ++inode->key_count;
@@ -326,7 +328,6 @@ inline bool BPlusTree<KeyType, Degree>::remove(const key_type &k)
 
                                 delete bro_inode;
                             }
-                        }
 
                         inode = dad_inode;
                     }
@@ -357,8 +358,7 @@ inline bool BPlusTree<KeyType, Degree>::remove(const key_type &k)
             else
             {
                 inode->keys[0] = lnode->next->keys[0]; // update direct father inode
-
-                if (!k_idx) // update ancestor inode
+                if (!k_idx)                            // update ancestor inode
                 {
                     INode *dad_inode = nullptr;
 
@@ -374,10 +374,12 @@ inline bool BPlusTree<KeyType, Degree>::remove(const key_type &k)
                             break;
                         }
                     }
+
                     if (child_idx)
                         inode->keys[child_idx - 1] = lnode->keys[0];
                 }
             }
+
             return true;
         }
     }
@@ -494,7 +496,6 @@ inline void BPlusTree<KeyType, Degree>::insert(const key_type &k)
                 if (inode->father)
                 {
                     dad_inode = inode->father;
-                    // in principle, the return value needs to be checked
                     child_idx = locate_value(dad_inode->children, dad_inode->child_count, static_cast<Node<KeyType, Degree> *>(inode));
 
                     insert_at(dad_inode->keys, dad_inode->key_count, inode->keys[SPLIT_POS], child_idx);
@@ -515,22 +516,20 @@ inline void BPlusTree<KeyType, Degree>::insert(const key_type &k)
                     inode->father = dad_inode;
                 }
 
-                {
-                    inode->key_count = SPLIT_POS;
-                    inode->child_count = SPLIT_POS + 1;
+                inode->key_count = SPLIT_POS;
+                inode->child_count = SPLIT_POS + 1;
 
-                    bro_inode->key_count = Degree - SPLIT_POS - 1;
-                    std::memcpy(bro_inode->keys, inode->keys + SPLIT_POS + 1,
-                                sizeof(key_type) * bro_inode->key_count);
-                    bro_inode->child_count = bro_inode->key_count + 1;
-                    std::memcpy(bro_inode->children, inode->children + inode->child_count,
-                                sizeof(Node<key_type, Degree> *) * bro_inode->child_count);
-                    bro_inode->father = dad_inode;
+                bro_inode->key_count = Degree - SPLIT_POS - 1;
+                std::memcpy(bro_inode->keys, inode->keys + SPLIT_POS + 1,
+                            sizeof(key_type) * bro_inode->key_count);
+                bro_inode->child_count = bro_inode->key_count + 1;
+                std::memcpy(bro_inode->children, inode->children + inode->child_count,
+                            sizeof(Node<key_type, Degree> *) * bro_inode->child_count);
+                bro_inode->father = dad_inode;
 
-                    if (ChildType::INDEX == bro_inode->child_type)
-                        for (size_type i = 0; i < bro_inode->child_count; ++i)
-                            static_cast<INode *>(bro_inode->children[i])->father = bro_inode;
-                }
+                if (ChildType::INDEX == bro_inode->child_type)
+                    for (size_type i = 0; i < bro_inode->child_count; ++i)
+                        static_cast<INode *>(bro_inode->children[i])->father = bro_inode;
 
                 if (exit_loop)
                     break;
@@ -539,10 +538,8 @@ inline void BPlusTree<KeyType, Degree>::insert(const key_type &k)
             }
         }
         else // Degree != lnode->key_count, do not need split
-        {
             if (child_idx)
                 inode->keys[child_idx - 1] = lnode->keys[0];
-        }
 
         while (inode->father)
             inode = inode->father;
@@ -596,6 +593,8 @@ inline std::ostream &BPlusTree<KeyType, Degree>::print_to(std::ostream &os) cons
             lnode = lnode->next;
         }
     }
+    else
+        os << "[]";
 
     return os;
 }
