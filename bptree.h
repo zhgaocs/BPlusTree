@@ -3,6 +3,7 @@
 
 #include <cstring>
 #include <queue>
+#include <istream>
 #include "node.h"
 #include "utils.h"
 
@@ -13,7 +14,8 @@ class BPlusTree
 {
     friend std::ostream &operator<<(std::ostream &os, const BPlusTree &bpt)
     {
-        return bpt.print_to(os);
+        bpt.serialization_to(os);
+        return os;
     }
 
 public:
@@ -33,13 +35,12 @@ public:
     ~BPlusTree() noexcept;
 
 public:
+    bool deserialization_from(const std::istream &);
     bool find(const key_type &) const;
     bool remove(const key_type &);
     void clear() noexcept;
     void insert(const key_type &);
-
-protected:
-    std::ostream &print_to(std::ostream &) const;
+    void serialization_to(std::ostream &) const;
 
 protected:
     INode *root = nullptr;
@@ -72,6 +73,12 @@ template <class KeyType, size_type Degree>
 inline BPlusTree<KeyType, Degree>::~BPlusTree() noexcept
 {
     clear();
+}
+
+template <class KeyType, size_type Degree>
+inline bool BPlusTree<KeyType, Degree>::deserialization_from(const std::istream &)
+{
+    return false;
 }
 
 template <class KeyType, size_type Degree>
@@ -549,7 +556,7 @@ inline void BPlusTree<KeyType, Degree>::insert(const key_type &k)
 }
 
 template <class KeyType, size_type Degree>
-inline std::ostream &BPlusTree<KeyType, Degree>::print_to(std::ostream &os) const
+inline void BPlusTree<KeyType, Degree>::serialization_to(std::ostream &os) const
 {
     // print indexnodes
     if (root)
@@ -595,8 +602,6 @@ inline std::ostream &BPlusTree<KeyType, Degree>::print_to(std::ostream &os) cons
     }
     else
         os << "[]";
-
-    return os;
 }
 
 #endif
