@@ -5,7 +5,6 @@
 
 /**
  * T must overload operator== and operator<=
- * note that some len is passed by reference
  * arr is ascending ordered
  */
 

@@ -13,9 +13,6 @@ enum struct ChildType : bool
 template <class KeyType, size_type MaxKeys>
 struct Node
 {
-    typedef KeyType key_type;
-    typedef size_type size_type;
-
     KeyType keys[MaxKeys];
     size_type key_count = 0;
 };
@@ -23,9 +20,6 @@ struct Node
 template <class KeyType, size_type MaxKeys>
 struct IndexNode : Node<KeyType, MaxKeys>
 {
-    typedef KeyType key_type;
-    typedef typename Node<KeyType, MaxKeys>::size_type size_type;
-
     IndexNode(ChildType);
 
     ChildType child_type;
@@ -37,22 +31,17 @@ struct IndexNode : Node<KeyType, MaxKeys>
 template <class KeyType, size_type MaxKeys>
 struct LeafNode : Node<KeyType, MaxKeys>
 {
-    typedef KeyType key_type;
-    typedef typename Node<KeyType, MaxKeys>::size_type size_type;
-
     LeafNode *next = nullptr;
 };
 
 template <class KeyType, size_type MaxKeys>
-inline IndexNode<KeyType, MaxKeys>::IndexNode(ChildType c_type) : child_type(c_type)
+inline IndexNode<KeyType, MaxKeys>::IndexNode(ChildType childType) : child_type(childType)
 {
 }
 
 template <class KeyType, size_type MaxKeys>
 inline static std::ostream &operator<<(std::ostream &os, const Node<KeyType, MaxKeys> &node)
 {
-    typedef typename Node<KeyType, MaxKeys>::size_type size_type;
-
     os << '[';
 
     for (size_type i = 0; i < node.key_count; ++i)
