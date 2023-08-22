@@ -35,7 +35,7 @@ public:
     ~BPlusTree() noexcept;
 
 public:
-    bool deserialization_from(const std::istream &);
+    bool deserialization_from(const std::istream &); // TODO
     bool find(const key_type &) const;
     bool remove(const key_type &);
     void clear() noexcept;
@@ -78,6 +78,7 @@ inline BPlusTree<KeyType, Degree>::~BPlusTree() noexcept
 template <class KeyType, size_type Degree>
 inline bool BPlusTree<KeyType, Degree>::deserialization_from(const std::istream &)
 {
+    // TODO
     return false;
 }
 
