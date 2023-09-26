@@ -20,7 +20,7 @@ class BPlusTree
 
 public:
     typedef KeyType key_type;
-    typedef size_type size_type;
+    typedef ::size_type size_type;
 
 protected:
     typedef IndexNode<key_type, Degree> INode;
