@@ -1,5 +1,5 @@
 #ifndef BPTREE_H
-#define BPTREE_H
+#define BPTREE_H 1
 
 #include <cstring>
 #include <queue>
