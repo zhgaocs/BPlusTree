@@ -1,5 +1,5 @@
 #ifndef UTILS_H
-#define UITLS_H
+#define UITLS_H 1
 
 #include "def.h"
 
