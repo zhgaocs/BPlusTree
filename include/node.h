@@ -1,5 +1,5 @@
 #ifndef NODE_H
-#define NODE_H
+#define NODE_H 1
 
 #include <ostream>
 #include "def.h"
