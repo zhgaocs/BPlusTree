@@ -2,16 +2,17 @@
 #define BPTREE_H 1
 
 #include <cstring>
-#include <queue>
 #include <istream>
+#include <queue>
 #include "node.h"
 #include "utils.h"
 
 // KeyType must overload operator== and operator<=
-// Degree >= 3
 template <class KeyType, size_type Degree>
 class BPlusTree
 {
+    static_assert(Degree >= 3, "Degree < 3");
+
     friend std::ostream &operator<<(std::ostream &os, const BPlusTree &bpt)
     {
         bpt.serialization_to(os);
