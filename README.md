@@ -21,11 +21,3 @@ To get started, you can follow these steps:
 ## Verification and Visualization
 
 If you want to verify the correctness of the B+ tree constructed by the program, you can use an online B+ tree visualization tool. Visit the following website for visualization: [B+ Tree Visualization](https://www.cs.usfca.edu/~galles/visualization/BPlusTree.html).
-
-## Contributions
-
-Contributions to this project are welcome. If you have ideas for improvements, bug fixes, or additional features, feel free to create pull requests.
-
----
-
-Thank you for checking out the BPlusTree project. Happy coding!
