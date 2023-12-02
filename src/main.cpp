@@ -25,8 +25,6 @@ int main(int argc, char *argv[])
         in.close();
 
         std::cout << bpt << std::endl;
-
-        std::cin.get();
     }
     else
     {
