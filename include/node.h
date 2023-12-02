@@ -40,7 +40,7 @@ inline IndexNode<KeyType, MaxKeys>::IndexNode(ChildType childType) : child_type(
 }
 
 template <class KeyType, size_type MaxKeys>
-inline static std::ostream &operator<<(std::ostream &os, const Node<KeyType, MaxKeys> &node)
+inline std::ostream &operator<<(std::ostream &os, const Node<KeyType, MaxKeys> &node)
 {
     os << '[';
 
@@ -51,13 +51,13 @@ inline static std::ostream &operator<<(std::ostream &os, const Node<KeyType, Max
 }
 
 template <class KeyType, size_type MaxKeys>
-inline static std::ostream &operator<<(std::ostream &os, const IndexNode<KeyType, MaxKeys> &inode)
+inline std::ostream &operator<<(std::ostream &os, const IndexNode<KeyType, MaxKeys> &inode)
 {
     return os << static_cast<Node<KeyType, MaxKeys>>(inode);
 }
 
 template <class KeyType, size_type MaxKeys>
-inline static std::ostream &operator<<(std::ostream &os, const LeafNode<KeyType, MaxKeys> &lnode)
+inline std::ostream &operator<<(std::ostream &os, const LeafNode<KeyType, MaxKeys> &lnode)
 {
     return os << static_cast<Node<KeyType, MaxKeys>>(lnode);
 }
