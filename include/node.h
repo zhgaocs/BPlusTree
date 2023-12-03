@@ -40,7 +40,7 @@ inline IndexNode<KeyType, MaxKeys>::IndexNode(ChildType childType) : child_type(
 }
 
 template <class KeyType, size_type MaxKeys>
-inline std::ostream &operator<<(std::ostream &os, const Node<KeyType, MaxKeys> &node)
+std::ostream &operator<<(std::ostream &os, const Node<KeyType, MaxKeys> &node)
 {
     os << '[';
 

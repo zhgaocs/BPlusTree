@@ -57,7 +57,7 @@ inline BPlusTree<KeyType, Degree>::BPlusTree(BPlusTree &&other) noexcept
 }
 
 template <class KeyType, size_type Degree>
-inline BPlusTree<KeyType, Degree> &BPlusTree<KeyType, Degree>::operator=(BPlusTree &&other) noexcept
+BPlusTree<KeyType, Degree> &BPlusTree<KeyType, Degree>::operator=(BPlusTree &&other) noexcept
 {
     if (this != &other)
     {
@@ -77,14 +77,14 @@ inline BPlusTree<KeyType, Degree>::~BPlusTree() noexcept
 }
 
 template <class KeyType, size_type Degree>
-inline bool BPlusTree<KeyType, Degree>::deserialization_from(const std::istream &)
+bool BPlusTree<KeyType, Degree>::deserialization_from(const std::istream &)
 {
     // TODO
     return false;
 }
 
 template <class KeyType, size_type Degree>
-inline bool BPlusTree<KeyType, Degree>::find(const key_type &k) const
+bool BPlusTree<KeyType, Degree>::find(const key_type &k) const
 {
     if (data)
     {
@@ -119,7 +119,7 @@ inline bool BPlusTree<KeyType, Degree>::find(const key_type &k) const
 }
 
 template <class KeyType, size_type Degree>
-inline bool BPlusTree<KeyType, Degree>::remove(const key_type &k)
+bool BPlusTree<KeyType, Degree>::remove(const key_type &k)
 {
     if (!data)
         return false;
@@ -395,7 +395,7 @@ inline bool BPlusTree<KeyType, Degree>::remove(const key_type &k)
 }
 
 template <class KeyType, size_type Degree>
-inline void BPlusTree<KeyType, Degree>::clear() noexcept
+void BPlusTree<KeyType, Degree>::clear() noexcept
 {
     if (root)
     {
@@ -434,7 +434,7 @@ inline void BPlusTree<KeyType, Degree>::clear() noexcept
 }
 
 template <class KeyType, size_type Degree>
-inline void BPlusTree<KeyType, Degree>::insert(const key_type &k)
+void BPlusTree<KeyType, Degree>::insert(const key_type &k)
 {
     if (!data) // there is no keys
     {
@@ -558,7 +558,7 @@ inline void BPlusTree<KeyType, Degree>::insert(const key_type &k)
 }
 
 template <class KeyType, size_type Degree>
-inline void BPlusTree<KeyType, Degree>::serialization_to(std::ostream &os) const
+void BPlusTree<KeyType, Degree>::serialization_to(std::ostream &os) const
 {
     // print indexnodes
     if (root)
