@@ -1,12 +1,13 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.14)
 
-project(BPlusTree VERSION 0.1 LANGUAGES CXX)
+project(BPlusTree)
 
 set(CMAKE_CXX_STANDARD 11)
-set(EXECUTABLE_NAME "bptree-test")
-set(SOURCE_FILES ${PROJECT_SOURCE_DIR}/src/main.cpp)
 
-add_executable(${EXECUTABLE_NAME} ${SOURCE_FILES})
+set(SOURCE_FILES
+    test/main.cpp
+)
 
-# target_include_directories must be behind add_executable
-target_include_directories(${EXECUTABLE_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/include)
+add_executable(bptree-test ${SOURCE_FILES})
+
+target_include_directories(bptree-test PRIVATE ${PROJECT_SOURCE_DIR}/include)
